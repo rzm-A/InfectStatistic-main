@@ -135,7 +135,6 @@ class InfectStatistic {
         }
         for(i = 0;i < j;i++) {
         	if(date_p.compareTo(name[i]) >= 0) {
-        		System.out.println("name = " +name[i]);
         		BufferedReader br = null;               
                 String dates = null;
                 br = new BufferedReader(new InputStreamReader(new FileInputStream(tempList[num[i]].toString()), "UTF-8"));  
@@ -154,7 +153,7 @@ class InfectStatistic {
         return b;
     }
 
-    //检验是否属数字
+    //检验是否是数字
     private boolean Date_Isdit(String str,int num1,int num2) {
     	if(!Character.isDigit(str.charAt(num1)) || !Character.isDigit(str.charAt(num2))) {
         	return false;
@@ -236,10 +235,10 @@ class InfectStatistic {
     
         
     public static void main(String[] args) throws IOException {
-    	String[] aa= {"list", "-date","2020-01-27","-log" ,"C:\\Users\\东伯\\Desktop\\123",
-    			"-out","D:\\ouput.txt","-type","ip","cure","-province","全国","福建","湖北"};
+    	//String[] aa= {"list", "-date","2020-01-27","-log" ,"C:\\Users\\东伯\\Desktop\\123",
+    	//		"-out","D:\\ouput.txt","-type","ip","cure","-province","全国","福建","湖北"};
     	InfectStatistic infectStatistic = new InfectStatistic();
-    	if (!Verify_Init_args(aa)) {
+    	if (!Verify_Init_args(args)) {
     		System.out.println("参数错误 ");
     		return ;
     	}
