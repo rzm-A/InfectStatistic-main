@@ -105,36 +105,63 @@ class InfectStatistic {
     }
     
     //验证文件是否存在,不存在返回false，存在则读取处理文件数据返回true
-    public boolean Read_Deal_File() throws IOException {  
+    @SuppressWarnings("null")
+	public boolean Read_Deal_File() throws IOException {  
     	boolean b = false;
         String filename;
         String[] filedate;
+        String[] name = new String[100];
+        int[] num = new int[100];
+        int i,j;
         File file = new File(log_p);
         File[] tempList = file.listFiles();
-        for(int i=0;i < tempList.length;i++) {
-	        filename = new String(tempList[i].getName());
+        //选取符合命名的文件
+        for(i=0,j = 0;i < tempList.length;i++) {
+        	filename = new String(tempList[i].getName());
 	        filedate = filename.split("\\.");
-	        if(date_p.equals(filedate[0])) {
-	        	BufferedReader br = null;               
+	        boolean b1,b2,b3,b4;
+	        if(filedate[0].length() != 10)
+	        	continue;
+	        if(filedate[0].charAt(4) != '-' || filedate[0].charAt(7) != '-')
+	        	continue;
+	        b1 = Date_Isdit(filedate[0],0,1);
+	        b2 = Date_Isdit(filedate[0],2,3);
+	        b3 = Date_Isdit(filedate[0],5,6);
+	        b4 = Date_Isdit(filedate[0],8,9);
+	        if(b1 && b2 && b3 && b4 && filedate[0] !=null) {
+	        	name[j] = filedate[0];
+	        	num[j++] = i;
+	        }
+        }
+        for(i = 0;i < j;i++) {
+        	if(date_p.compareTo(name[i]) >= 0) {
+        		System.out.println("name = " +name[i]);
+        		BufferedReader br = null;               
                 String dates = null;
-                br = new BufferedReader(new InputStreamReader(new FileInputStream(tempList[i].toString()), "UTF-8"));  
+                br = new BufferedReader(new InputStreamReader(new FileInputStream(tempList[num[i]].toString()), "UTF-8"));  
                 while ((dates = br.readLine()) != null){
-                	Deal_Dates_Line(dates);
+                	Deal_Dates_Line(dates); 
                 }
                 b = true;
                 br.close();
-                break;
-	        }
+        	}
         }
         map.put(provinceList.get(0), new Province(provinceList.get(0)));
-        for (int i = 0; i < provinceList.size(); i ++ )
-        {
+        for (i = 0; i < provinceList.size(); i ++ ){
             if (map.get(provinceList.get(i)) != null)
             	map.get(provinceList.get(0)).Statistics(map.get(provinceList.get(i)));
         }
         return b;
     }
 
+    //检验是否属数字
+    private boolean Date_Isdit(String str,int num1,int num2) {
+    	if(!Character.isDigit(str.charAt(num1)) || !Character.isDigit(str.charAt(num2))) {
+        	return false;
+        }
+    	return true;
+    }
+    
     //处理文件数据（单行）
     private void Deal_Dates_Line(String dates) throws IOException {
     	String[] date = dates.split(" ");
@@ -209,10 +236,10 @@ class InfectStatistic {
     
         
     public static void main(String[] args) throws IOException {
-    	//String[] aa= {"list", "-date","2020-01-22","-log" ,"C:\\Users\\东伯\\Desktop\\123",
-    	//		"-out","D:\\ouput.txt","-type","ip","cure","-province","全国","福建","湖北"};
+    	String[] aa= {"list", "-date","2020-01-27","-log" ,"C:\\Users\\东伯\\Desktop\\123",
+    			"-out","D:\\ouput.txt","-type","ip","cure","-province","全国","福建","湖北"};
     	InfectStatistic infectStatistic = new InfectStatistic();
-    	if (!Verify_Init_args(args)) {
+    	if (!Verify_Init_args(aa)) {
     		System.out.println("参数错误 ");
     		return ;
     	}
@@ -221,8 +248,8 @@ class InfectStatistic {
     		return ;
     	}
     	infectStatistic.Output_File();
-    	
     }
+    
 }
 
 //某个省份的具体数据
