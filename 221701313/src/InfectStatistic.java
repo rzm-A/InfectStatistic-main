@@ -13,22 +13,22 @@ class InfectStatistic {
     //接收命令行参数
     private String[] args;
     //日志日期
-    private static String date_;
+    private static String date_p;
     //日志路径
-    private static String log_;
+    private static String log_p;
     //output文件路径
-    private static String out_;
+    private static String out_p;
     //需输出的类型
-    private static String[] type_;
+    private static String[] type_p;
     //需输出的省份
-    private static List<String> province_;
+    private static List<String> province_p;
     //输出所有type的信息
     private static boolean AllType;
     //输出所有province的信息
     private static boolean AllProvince;
-    //参数province_的映射关系
+    //参数province_p的映射关系
     private HashMap<String,Province> map;
-    //参数type_的映射关系
+    //参数type_p的映射关系
     @SuppressWarnings("serial")
 	public static final Map<String, String> typeMap = new HashMap<String, String>() {{
         put("ip", "感染患者");
@@ -37,17 +37,16 @@ class InfectStatistic {
         put("dead", "死亡");
     }};
     //省份名称
-    private static final List<String> provinceList = Arrays.asList("全国", "安徽", "北京",
-    		"重庆", "福建", "甘肃", "广东", "广西",
-            "贵州", "海南", "河北", "河南", "黑龙江", "湖北", "湖南", "吉林", "江苏", "江西", "辽宁", "内蒙古", "宁夏",
-            "青海", "山东", "山西", "陕西", "上海", "四川", "天津", "西藏", "新疆", "云南", "浙江");
+    private static final List<String> provinceList = Arrays.asList("全国", "安徽", "北京", "重庆", "福建", "甘肃",
+    		"广东","广西","贵州", "海南", "河北", "河南", "黑龙江", "湖北", "湖南", "吉林", "江苏", "江西", "辽宁", 
+    		"内蒙古", "宁夏", "青海", "山东", "山西", "陕西", "上海", "四川", "天津", "西藏", "新疆", "云南", "浙江");
     
     //构造函数
     public InfectStatistic(){
-        type_ = new String[10];
+    	type_p = new String[10];
         AllType = true;
         AllProvince = true;
-        province_ = new ArrayList<>();
+        province_p = new ArrayList<>();
         map = new HashMap<String,Province>();
         for (int i = 0; i < provinceList.size(); i ++ )
         	map.put(provinceList.get(i), null);
@@ -60,18 +59,18 @@ class InfectStatistic {
     			i++;
     			switch (args_[i-1]) {
 					case "-date":
-						date_ = new String(args_[i]);
+						date_p = new String(args_[i]);
 	                    break;
     				case "-log":
-    					log_ = args_[i];
-    					File file = new File(log_);
+    					log_p = args_[i];
+    					File file = new File(log_p);
     			        if (!file.exists()) {
     			        	System.out.print("-log错误!--");
     			        	return false;
     			        }
                         break;
     				case "-out":
-    					out_ = args_[i];
+    					out_p = args_[i];
                         break;
     				case "-type":
     					AllType = true;
@@ -81,7 +80,7 @@ class InfectStatistic {
     							return false;
     						}
     						else
-    							type_[j] = typeMap.get(args_[i]);
+    							type_p[j] = typeMap.get(args_[i]);
     					}
     					i--;
                         break;
@@ -89,7 +88,7 @@ class InfectStatistic {
     					AllProvince = false;
     					for(int j = 0; i < args_.length && !args_[i].startsWith("-");j++,i++) {
     						if(provinceList.contains(args_[i])) {
-    							province_.add(args_[i]);
+    							province_p.add(args_[i]);
     						}
     						else
     							System.out.print("-province错误!--");
@@ -110,12 +109,12 @@ class InfectStatistic {
     	boolean b = false;
         String filename;
         String[] filedate;
-        File file = new File(log_);
+        File file = new File(log_p);
         File[] tempList = file.listFiles();
         for(int i=0;i < tempList.length;i++) {
 	        filename = new String(tempList[i].getName());
 	        filedate = filename.split("\\.");
-	        if(date_.equals(filedate[0])) {
+	        if(date_p.equals(filedate[0])) {
 	        	BufferedReader br = null;               
                 String dates = null;
                 br = new BufferedReader(new InputStreamReader(new FileInputStream(tempList[i].toString()), "UTF-8"));  
@@ -188,20 +187,20 @@ class InfectStatistic {
     
     //根据要求生成输出文件
     public void Output_File() throws IOException {
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(out_), "UTF-8"));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(out_p), "UTF-8"));
         //无-province参数，默认输出所有省情况
         if (AllProvince)
         {
             for (int i = 0;i < provinceList.size();i++)
                 if (map.get(provinceList.get(i)) != null)
-                    map.get(provinceList.get(i)).output(AllType,type_ ,bw);
+                    map.get(provinceList.get(i)).output(AllType,type_p ,bw);
         }
         else
         {
             for (int i = 0; i < provinceList.size(); i ++ )
             { 
-                if (province_.contains(provinceList.get(i)))
-                    map.get(provinceList.get(i)).output(AllType,type_ ,bw);
+                if (province_p.contains(provinceList.get(i)))
+                    map.get(provinceList.get(i)).output(AllType,type_p ,bw);
             }
         }
         bw.write("// 该文档并非真实数据，仅供测试使用");
@@ -210,14 +209,15 @@ class InfectStatistic {
     
         
     public static void main(String[] args) throws IOException {
-    	//String[] aa= {"list", "-date","2020-01-22","-log" ,"C:\\Users\\东伯\\Desktop\\123","-out","D:\\ouput.txt","-type","ip","cure","-province","全国","福建","湖北"};
+    	//String[] aa= {"list", "-date","2020-01-22","-log" ,"C:\\Users\\东伯\\Desktop\\123",
+    	//		"-out","D:\\ouput.txt","-type","ip","cure","-province","全国","福建","湖北"};
     	InfectStatistic infectStatistic = new InfectStatistic();
     	if (!Verify_Init_args(args)) {
     		System.out.println("参数错误 ");
     		return ;
     	}
     	if(!infectStatistic.Read_Deal_File()) {
-    		System.out.println("路径: "+log_+"下不存在" +date_+ ".log.txt!");
+    		System.out.println("路径: "+log_p+"下不存在" +date_p+ ".log.txt!");
     		return ;
     	}
     	infectStatistic.Output_File();
@@ -286,11 +286,9 @@ class Province {
 	}
 	
 	//输出指定省的信息
-	public void output(boolean alltype, String[] type, BufferedWriter bw) throws IOException
-	{
+	public void output(boolean alltype, String[] type, BufferedWriter bw) throws IOException{
 	    //无-type参数，默认输出所有type类型
-	    if (alltype)
-	    {
+	    if (alltype){
 	        bw.write(provincename+ " 感染患者 " +ip+ "人 疑似患者 " +sp+ "人  治愈 " 
 	        		+cure+ "人 死亡 " +dead+ "人");
 	        bw.newLine();
