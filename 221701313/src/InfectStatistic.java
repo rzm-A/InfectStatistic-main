@@ -73,7 +73,7 @@ class InfectStatistic {
     					out_p = args_[i];
                         break;
     				case "-type":
-    					AllType = true;
+    					AllType = false;
     					for(int j = 0;!args_[i].startsWith("-");j++,i++) {
     						if(!typeMap.containsKey(args_[i])) {
     							System.out.print("-type错误!--");
@@ -145,6 +145,7 @@ class InfectStatistic {
                 br.close();
         	}
         }
+        //对每个日志文件，统计全国信息
         map.put(provinceList.get(0), new Province(provinceList.get(0)));
         for (i = 0; i < provinceList.size(); i ++ ){
             if (map.get(provinceList.get(i)) != null)
@@ -224,10 +225,8 @@ class InfectStatistic {
         else
         {
             for (int i = 0; i < provinceList.size(); i ++ )
-            { 
                 if (province_p.contains(provinceList.get(i)))
                     map.get(provinceList.get(i)).output(AllType,type_p ,bw);
-            }
         }
         bw.write("// 该文档并非真实数据，仅供测试使用");
         bw.close();
@@ -235,10 +234,9 @@ class InfectStatistic {
     
         
     public static void main(String[] args) throws IOException {
-    	//String[] aa= {"list", "-date","2020-01-27","-log" ,"C:\\Users\\东伯\\Desktop\\123",
-    	//		"-out","D:\\ouput.txt","-type","ip","cure","-province","全国","福建","湖北"};
+    	String[] aa= {"list", "-date","2020-01-27","-log" ,"C:\\Users\\东伯\\Desktop\\123","-out","D:\\ouput.txt","-type","ip","cure","-province","全国","福建","湖北"};
     	InfectStatistic infectStatistic = new InfectStatistic();
-    	if (!Verify_Init_args(args)) {
+    	if (!Verify_Init_args(aa)) {
     		System.out.println("参数错误 ");
     		return ;
     	}
@@ -319,10 +317,9 @@ class Province {
 	        		+cure+ "人 死亡 " +dead+ "人");
 	        bw.newLine();
 	    }
-	    else
-	      {
+	    else{
 	          bw.write(provincename);
-	          for (int i = 0; i < type.length; i ++ ){
+	          for (int i = 0;i < type.length && type[i] != null; i ++ ){
 	        	  bw.write(" " +type[i]);
 	        	  switch (type[i])
 	              {
