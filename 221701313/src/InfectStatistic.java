@@ -146,7 +146,8 @@ class InfectStatistic {
         	}
         }
         //对每个日志文件，统计全国信息
-        map.put(provinceList.get(0), new Province(provinceList.get(0)));
+        if (map.get(provinceList.get(0)) == null)
+        	map.put(provinceList.get(0), new Province(provinceList.get(0)));
         for (i = 0; i < provinceList.size(); i ++ ){
             if (map.get(provinceList.get(i)) != null)
             	map.get(provinceList.get(0)).Statistics(map.get(provinceList.get(i)));
